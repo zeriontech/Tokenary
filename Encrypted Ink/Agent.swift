@@ -189,7 +189,7 @@ class Agent: NSObject {
     }
     
     @objc private func didSelectMailMenuItem() {
-        if let url = URL(string: "mailto:support@encrypted.ink") {
+        if let url = URL(string: "mailto:support@tokenary.io") {
             NSWorkspace.shared.open(url)
         }
     }

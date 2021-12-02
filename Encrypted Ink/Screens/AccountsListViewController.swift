@@ -30,6 +30,8 @@ class AccountsListViewController: NSViewController {
         }
     }
     
+    @IBOutlet weak var scrollView: NSScrollView!
+    @IBOutlet weak var migrationPrompt: NSVisualEffectView!
     private weak var testnetsMenuItem: NSMenuItem?
     @IBOutlet weak var chainButtonHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var chainButtonContainer: NSView!
@@ -61,6 +63,11 @@ class AccountsListViewController: NSViewController {
         reloadHeader()
         updateCellModels()
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: NSApplication.didBecomeActiveNotification, object: nil)
+        
+        if isTimeToMoveToTokenary {
+            migrationPrompt.isHidden = false
+            scrollView.contentInsets.bottom = 154
+        }
     }
     
     override func viewDidAppear() {
@@ -109,6 +116,12 @@ class AccountsListViewController: NSViewController {
             menu.addItem(submenuItem)
             testnetsMenuItem = submenuItem
             chainButton.menu = menu
+        }
+    }
+    
+    @IBAction func getNewAppButtonClicked(_ sender: Any) {
+        if let url = URL(string: "https://tokenary.io/macos") {
+            NSWorkspace.shared.open(url)
         }
     }
     

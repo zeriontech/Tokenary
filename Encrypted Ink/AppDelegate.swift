@@ -2,6 +2,11 @@
 
 import Cocoa
 
+let isTimeToMoveToTokenary: Bool = {
+    let year = Calendar.current.component(.year, from: Date())
+    return year > 2021
+}()
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
