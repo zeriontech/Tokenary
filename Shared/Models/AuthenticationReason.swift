@@ -3,12 +3,13 @@
 enum AuthenticationReason {
     case start
     case sendTransaction
-    case removeAccount
+    case removeWallet
     case showPrivateKey
     case showSecretWords
     case signMessage
     case signPersonalMessage
     case signTypedData
+    case approveTransaction
     
     var title: String {
         switch self {
@@ -16,8 +17,8 @@ enum AuthenticationReason {
             return Strings.start
         case .sendTransaction:
             return Strings.sendTransaction
-        case .removeAccount:
-            return Strings.removeAccount
+        case .removeWallet:
+            return Strings.removeWallet
         case .showPrivateKey:
             return Strings.showPrivateKey
         case .showSecretWords:
@@ -28,6 +29,8 @@ enum AuthenticationReason {
             return Strings.signPersonalMessage
         case .signTypedData:
             return Strings.signTypedData
+        case .approveTransaction:
+            return Strings.approveTransaction
         }
     }
 }

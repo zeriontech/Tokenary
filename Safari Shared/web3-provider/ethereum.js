@@ -319,20 +319,51 @@ class TokenaryEthereum extends EventEmitter {
         this.postMessage("addEthereumChain", payload.id, payload.params[0]);
     }
     
+    processTokenaryResponse(id, response) {
+        if (response.name == "didLoadLatestConfiguration") {
+            this.didGetLatestConfiguration = true;
+            if (response.chainId) {
+                this.updateAccount(response.name, response.results, response.chainId, response.rpcURL);
+            }
+            
+            for(let payload of this.pendingPayloads) {
+                this._processPayload(payload);
+            }
+            
+            this.pendingPayloads = [];
+            return;
+        }
+        
+        if ("result" in response) {
+            this.sendResponse(id, response.result);
+        } else if ("results" in response) {
+            if (response.name == "switchEthereumChain" || response.name == "addEthereumChain") {
+                // Calling it before sending response matters for some dapps
+                this.updateAccount(response.name, response.results, response.chainId, response.rpcURL);
+            }
+            if (response.name != "switchAccount") {
+                this.sendResponse(id, response.results);
+            }
+            if (response.name == "requestAccounts" || response.name == "switchAccount") {
+                // Calling it after sending response matters for some dapps
+                this.updateAccount(response.name, response.results, response.chainId, response.rpcURL);
+            }
+        } else if ("error" in response) {
+            this.sendError(id, response.error);
+        }
+    }
+    
     /**
      * @private Internal js -> native message handler
      */
     postMessage(handler, id, data) {
         if (this.ready || handler === "requestAccounts") {
             let object = {
-                id: id,
-                name: handler,
                 object: data,
                 address: this.address,
-                networkId: this.net_version(),
-                host: window.location.host
+                networkId: this.net_version()
             };
-            window.tokenary.postMessage(object);
+            window.tokenary.postMessage(handler, id, object, "ethereum");
         } else {
             // don't forget to verify in the app
             this.sendError(id, new ProviderRpcError(4100, "provider is not ready"));
@@ -347,7 +378,7 @@ class TokenaryEthereum extends EventEmitter {
         let callback = this.callbacks.get(id);
         let wrapResult = this.wrapResults.get(id);
         let data = { jsonrpc: "2.0", id: originId };
-        if (typeof result === "object" && result.jsonrpc && result.result) {
+        if (result !== null && result.jsonrpc && result.result) {
             data.result = result.result;
         } else {
             data.result = result;

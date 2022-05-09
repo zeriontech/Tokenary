@@ -2,6 +2,7 @@
 
 import Cocoa
 import BlockiesSwift
+import WalletCore
 
 class AccountCellView: NSTableRowView {
     
@@ -14,10 +15,9 @@ class AccountCellView: NSTableRowView {
     }
     @IBOutlet weak var addressTextField: NSTextField!
     
-    func setup(address: String) {
-        addressImageView.image = Blockies(seed: address.lowercased()).createImage()
-        let without0x = address.dropFirst(2)
-        addressTextField.stringValue = without0x.prefix(4) + "..." + without0x.suffix(4)
+    func setup(account: Account) {
+        addressImageView.image = account.image
+        addressTextField.stringValue = account.croppedAddress
     }
     
     func blink() {

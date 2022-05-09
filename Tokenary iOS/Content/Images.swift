@@ -1,6 +1,7 @@
 // Copyright © 2021 Tokenary. All rights reserved.
 
 import UIKit
+import WalletCore
 
 struct Images {
     
@@ -8,7 +9,12 @@ struct Images {
     static var failedToLoad: UIImage { systemName("xmark.octagon") }
     static var preferences: UIImage { systemName("gearshape") }
     static var circleFill: UIImage { systemName("circle.fill") }
+    static var chevronDown: UIImage { systemName("chevron.down") }
  
+    static func logo(coin: CoinType) -> UIImage {
+        return named("Logo" + coin.name)
+    }
+    
     private static func named(_ name: String) -> UIImage {
         return UIImage(named: name)!
     }
